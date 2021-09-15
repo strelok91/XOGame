@@ -5,7 +5,6 @@ class UserAgent {
     }
 
     restart() {
-        console.log("restart")
     }
 
     async getAction(state, possibleActions) {
@@ -14,7 +13,6 @@ class UserAgent {
     }
 
     #waitUserClick(elements) {
-        console.log(elements)
         return new Promise((resolve, _) => {
 
             let listener = event => {

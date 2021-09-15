@@ -13,7 +13,6 @@ class XOGame {
     constructor(cellElements) {
         this.cellElements = cellElements
         this.circleTurn = false
-        console.log(cellElements)
     }
 
     get X_CLASS() {
