@@ -10,21 +10,22 @@ class XOGame {
         [2, 4, 6]
     ]
 
-    X_CLASS = 'x'
-    CIRCLE_CLASS = 'circle'
-
     constructor(cellElements) {
         this.cellElements = cellElements
         this.circleTurn = false
         console.log(cellElements)
     }
 
-    get currentClass() {
-        return this.isCircleTurn() ? CIRCLE_CLASS : X_CLASS
+    get X_CLASS() {
+        return 'x'
     }
 
-    get currentClassName() {
-        return this.isCircleTurn() ? "O" : "X"
+    get CIRCLE_CLASS() {
+        return 'circle'
+    }
+
+    get currentClass() {
+        return this.#isCircleTurn() ? this.CIRCLE_CLASS : this.X_CLASS
     }
 
     get endGame() {
@@ -33,7 +34,7 @@ class XOGame {
 
     get isDraw() {
         return [...this.cellElements].every(cell => {
-            return cell.classList.contains(X_CLASS) || cell.classList.contains(CIRCLE_CLASS)
+            return cell.classList.contains(this.X_CLASS) || cell.classList.contains(this.CIRCLE_CLASS)
         })
     }
 
@@ -57,10 +58,36 @@ class XOGame {
             .map(m => m.index)
     }
 
+    clearStates() {
+        cellElements.forEach(cell => {
+            cell.classList.remove(this.X_CLASS)
+            cell.classList.remove(this.CIRCLE_CLASS)
+        })
+        this.#adjustCircleTurn()
+    }
+
+    checkWin(currentClass) {
+        return this.WINNING_COMBINATIONS.some(combination => {
+            return combination.every(index => {
+                return this.cellElements[index].classList.contains(currentClass)
+            })
+        })
+    }
+
+    moveActionIndex(actionIndex) {
+        this.#placeMark(this.cellElements[actionIndex])
+        this.#swapTurns()
+    }
+
+    moveCell(cell) {
+        this.#placeMark(cell)
+        this.#swapTurns()
+    }
+
     setState(state) {
         this.clearStates()
 
-        let digits = this.toBase(state, 3);
+        let digits = this.#toBase(state, 3);
 
         [...this.cellElements].map((c, i) => {
             let digit = digits[digits.length - i - 1]
@@ -72,12 +99,12 @@ class XOGame {
             }
         })
 
-        this.adjustCircleTurn()
+        this.#adjustCircleTurn()
     }
 
-    adjustCircleTurn() {
+    #adjustCircleTurn() {
         let xCellsCount = [...this.cellElements].filter(c => c.classList.contains(this.X_CLASS))
-        let oCellsCount = [...this.cellElements].filter(c => c.classList.contains(this.CIRCLE_CLASS_CLASS))
+        let oCellsCount = [...this.cellElements].filter(c => c.classList.contains(this.CIRCLE_CLASS))
 
         if (xCellsCount <= oCellsCount) {
             this.circleTurn = false
@@ -86,35 +113,19 @@ class XOGame {
         }
     }
 
-    isCircleTurn() {
+    #isCircleTurn() {
         return this.circleTurn
     }
 
-    placeMark(cell) {
+    #placeMark(cell) {
         cell.classList.add(this.currentClass)
     }
 
-    swapTurns() {
+    #swapTurns() {
         this.circleTurn = !this.circleTurn
     }
 
-    checkWin(currentClass) {
-        return this.WINNING_COMBINATIONS.some(combination => {
-            return combination.every(index => {
-                return this.cellElements[index].classList.contains(currentClass)
-            })
-        })
-    }
-
-    clearStates() {
-        cellElements.forEach(cell => {
-            cell.classList.remove(X_CLASS)
-            cell.classList.remove(CIRCLE_CLASS)
-        })
-        this.adjustCircleTurn()
-    }
-
-    toBase(num, radix = 10) {
+    #toBase(num, radix = 10) {
         var keys = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"];
         if (!(radix >= 2 && radix <= keys.length)) throw new RangeError("toBase() radix argument must be between 2 and " + keys.length)
 

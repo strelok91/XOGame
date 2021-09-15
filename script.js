@@ -1,13 +1,12 @@
-const X_CLASS = 'x'
-const CIRCLE_CLASS = 'circle'
+const board = document.getElementById('board')
+const restartButton = document.getElementById('restartButton')
 
 const cellElements = document.querySelectorAll('[data-cell]')
 const game = new XOGame(cellElements)
-const board = document.getElementById('board')
-const winningMessageElement = document.getElementById('winningMessage')
-const restartButton = document.getElementById('restartButton')
-const winningMessageTextElement = document.querySelector('[data-winning-message-text]')
 
+const winningMessageElement = document.getElementById('winningMessage')
+const winningMessageTextElement = document.querySelector('[data-winning-message-text]')
+const messageHelper = new MessageHelper(winningMessageElement, winningMessageTextElement)
 
 startGame()
 
@@ -20,37 +19,40 @@ function startGame() {
     cell.removeEventListener('click', handleClick)
     cell.addEventListener('click', handleClick, { once: true })
   })
+
   setBoardHoverClass()
-  winningMessageElement.classList.remove('show')
+
+  messageHelper.hideMessage()
 }
 
 function handleClick(e) {
   const cell = e.target
 
-  game.placeMark(cell)
-  console.log(game.state)
-  console.log(game.possibleActions)
+  game.moveCell(cell)
+  setBoardHoverClass()
+  
   if (game.endGame) {
     showEndGameMessage()
-  } else {
-    game.swapTurns()
-    setBoardHoverClass()
   }
 }
 
 function showEndGameMessage() {
-  if (game.checkWin(game.currentClass)) {
-    winningMessageTextElement.innerText = `${game.currentClassName}'s Wins!`
-  } else {
-    winningMessageTextElement.innerText = 'Draw!'
+  if (game.checkWin(game.X_CLASS)) {
+    messageHelper.displayPlayerWon("X")
   }
 
-  winningMessageElement.classList.add('show')
+  if (game.checkWin(game.CIRCLE_CLASS)) {
+    messageHelper.displayPlayerWon("O")
+  }
+
+  if (game.isDraw) {
+    messageHelper.displayDraw()
+  }
 }
 
 function setBoardHoverClass() {
-  board.classList.remove(X_CLASS)
-  board.classList.remove(CIRCLE_CLASS)
+  board.classList.remove(game.X_CLASS)
+  board.classList.remove(game.CIRCLE_CLASS)
 
   board.classList.add(game.currentClass)
 }
