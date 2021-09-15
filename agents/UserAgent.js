@@ -4,9 +4,6 @@ class UserAgent {
         this.cellElements = cellElements
     }
 
-    restart() {
-    }
-
     async getAction(state, possibleActions) {
         return this.#waitUserClick([...this.cellElements]
             .map((c, i) => { return { cell: c, index: i } })

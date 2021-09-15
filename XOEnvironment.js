@@ -8,10 +8,7 @@ class XOEnvironment {
     }
 
     async startNewGame() {
-
         this.game.clearStates()
-        this.agentX.restart()
-        this.agentO.restart()
 
         let agents = {}
         agents[this.game.X_CLASS] = this.agentX
@@ -29,6 +26,35 @@ class XOEnvironment {
         }
 
         this.#showEndGameMessage()
+    }
+
+    async train(numberOfGames) {
+        let agents = {}
+        agents[this.game.X_CLASS] = this.agentX
+        agents[this.game.CIRCLE_CLASS] = this.agentO
+        this.messageHelper.hideMessage()
+
+        for (let i = 0; i < numberOfGames; ++i) {
+            if (i % 100 == 0) {
+                console.log(`Game: ${i + 1}`)
+            }
+
+            await this.#playTrainingGame(agents)
+        }
+
+        console.log(`Game: ${numberOfGames}`)
+    }
+
+    async #playTrainingGame(agents)
+    {
+        this.game.clearStates()
+
+        while (!this.game.endGame) {
+            let nextAgent = agents[this.game.currentClass]
+            let action = await nextAgent.getAction(this.game.state, this.game.possibleActions)
+
+            this.game.moveActionIndex(action)
+        }
     }
 
     #setBoardHoverClass() {

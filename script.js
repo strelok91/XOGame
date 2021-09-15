@@ -8,14 +8,32 @@ let winningMessageElement = document.getElementById('winningMessage')
 let winningMessageTextElement = document.querySelector('[data-winning-message-text]')
 let messageHelper = new MessageHelper(winningMessageElement, winningMessageTextElement)
 
-let environment = new XOEnvironment(
+let agentX = new QAgent()
+let agentO = new QAgent()
+
+let trainEnvironment = new XOEnvironment(
     game,
-    new UserAgent(cellElements),
-    new QAgent(),
+    agentX,
+    agentO,
     messageHelper,
     board
 )
 
-restartButton.addEventListener('click',  async _ => environment.startNewGame())
+let environment = new XOEnvironment(
+    game,
+    agentX,
+    new UserAgent(cellElements),
+    messageHelper,
+    board
+)
 
-environment.startNewGame()
+let runScenario = async () => {
+
+    // await trainEnvironment.train(1)
+
+    restartButton.addEventListener('click', async _ => environment.startNewGame())
+
+    await environment.startNewGame()
+}
+
+runScenario()
