@@ -5,10 +5,10 @@ class UserAgent {
     }
 
     restart() {
-
+        console.log("restart")
     }
 
-    async getAction(possibleActions) {
+    async getAction(state, possibleActions) {
         return this.#waitUserClick([...this.cellElements]
             .filter((_, i) => possibleActions.indexOf(i) >= 0))
     }
