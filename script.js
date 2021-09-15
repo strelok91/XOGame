@@ -8,32 +8,27 @@ const winningMessageElement = document.getElementById('winningMessage')
 const winningMessageTextElement = document.querySelector('[data-winning-message-text]')
 const messageHelper = new MessageHelper(winningMessageElement, winningMessageTextElement)
 
+const agent = new UserAgent(cellElements)
+
 startGame()
 
 restartButton.addEventListener('click', startGame)
 
-function startGame() {
+async function startGame() {
   game.clearStates()
-
-  cellElements.forEach(cell => {
-    cell.removeEventListener('click', handleClick)
-    cell.addEventListener('click', handleClick, { once: true })
-  })
-
-  setBoardHoverClass()
-
-  messageHelper.hideMessage()
-}
-
-function handleClick(e) {
-  const cell = e.target
-
-  game.moveCell(cell)
-  setBoardHoverClass()
+  agent.restart()
   
-  if (game.endGame) {
-    showEndGameMessage()
+  messageHelper.hideMessage()
+
+  while (!game.endGame) {
+    setBoardHoverClass()
+
+    let actionCell = await agent.getAction(game.possibleActions)
+
+    game.moveCell(actionCell)
   }
+
+  showEndGameMessage()
 }
 
 function showEndGameMessage() {
