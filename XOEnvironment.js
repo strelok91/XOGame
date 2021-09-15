@@ -23,9 +23,9 @@ class XOEnvironment {
             this.#setBoardHoverClass()
 
             let nextAgent = agents[this.game.currentClass]
-            let actionCell = await nextAgent.getAction(this.game.state, this.game.possibleActions)
+            let action = await nextAgent.getAction(this.game.state, this.game.possibleActions)
 
-            this.game.moveCell(actionCell)
+            this.game.moveActionIndex(action)
         }
 
         this.#showEndGameMessage()

@@ -77,12 +77,7 @@ class XOGame {
         this.#placeMark(this.cellElements[actionIndex])
         this.#swapTurns()
     }
-
-    moveCell(cell) {
-        this.#placeMark(cell)
-        this.#swapTurns()
-    }
-
+    
     setState(state) {
         this.clearStates()
 

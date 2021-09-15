@@ -9,19 +9,20 @@ class UserAgent {
 
     async getAction(state, possibleActions) {
         return this.#waitUserClick([...this.cellElements]
-            .filter((_, i) => possibleActions.indexOf(i) >= 0))
+            .map((c, i) => { return { cell: c, index: i } })
+            .filter(m => possibleActions.indexOf(m.index) >= 0))
     }
 
     #waitUserClick(elements) {
         return new Promise((resolve, _) => {
 
             let listener = event => {
-                elements.forEach(c => c.removeEventListener('click', listener));
+                elements.forEach(m => m.cell.removeEventListener('click', listener));
 
-                resolve(event.target);
+                resolve([...this.cellElements].indexOf(event.target));
             };
 
-            elements.forEach(c => c.addEventListener('click', listener));
+            elements.forEach(m => m.cell.addEventListener('click', listener));
         });
     }
 }

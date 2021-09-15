@@ -11,7 +11,7 @@ let messageHelper = new MessageHelper(winningMessageElement, winningMessageTextE
 let environment = new XOEnvironment(
     game,
     new UserAgent(cellElements),
-    new UserAgent(cellElements),
+    new QAgent(),
     messageHelper,
     board
 )
