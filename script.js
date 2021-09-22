@@ -22,9 +22,9 @@ let trainEnvironment = new XOEnvironment(
 
 let environment = new XOEnvironment(
     game,
-    agentX,
+    // agentX,
     new UserAgent(cellElements),
-    // agentO,
+    agentO,
     messageHelper,
     board
 )
@@ -35,7 +35,7 @@ let runScenario = async () => {
 
     restartButton.addEventListener('click', async _ => environment.startNewGame())
 
-    await trainEnvironment.train(15000)
+    await trainEnvironment.train(10000)
 
     console.log("finished trainig")
 
