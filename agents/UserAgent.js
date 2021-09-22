@@ -10,6 +10,14 @@ class UserAgent {
             .filter(m => possibleActions.indexOf(m.index) >= 0))
     }
 
+    async getBestAction(state, possibleActions) {
+        return this.getAction(state, possibleActions)
+    }
+
+    async updateReward(reward) {
+    }
+
+
     #waitUserClick(elements) {
         return new Promise((resolve, _) => {
 

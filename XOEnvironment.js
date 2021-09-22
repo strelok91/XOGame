@@ -20,7 +20,7 @@ class XOEnvironment {
             this.#setBoardHoverClass()
 
             let nextAgent = agents[this.game.currentClass]
-            let action = await nextAgent.getAction(this.game.state, this.game.possibleActions)
+            let action = await nextAgent.getBestAction(this.game.state, this.game.possibleActions)
 
             this.game.moveActionIndex(action)
         }
@@ -32,21 +32,21 @@ class XOEnvironment {
         let agents = {}
         agents[this.game.X_CLASS] = this.agentX
         agents[this.game.CIRCLE_CLASS] = this.agentO
-        this.messageHelper.hideMessage()
 
         for (let i = 0; i < numberOfGames; ++i) {
-            if (i % 100 == 0) {
+            if (i % 1000 == 0) {
                 console.log(`Game: ${i + 1}`)
             }
 
             await this.#playTrainingGame(agents)
+
+            this.#updateAgentsRewards()
         }
 
         console.log(`Game: ${numberOfGames}`)
     }
 
-    async #playTrainingGame(agents)
-    {
+    async #playTrainingGame(agents) {
         this.game.clearStates()
 
         while (!this.game.endGame) {
@@ -54,6 +54,19 @@ class XOEnvironment {
             let action = await nextAgent.getAction(this.game.state, this.game.possibleActions)
 
             this.game.moveActionIndex(action)
+        }
+    }
+
+    #updateAgentsRewards() {
+        if (this.game.checkWin(this.game.X_CLASS)) {
+            this.agentX.updateReward(3)
+            this.agentO.updateReward(-3)
+        } else if (this.game.checkWin(this.game.CIRCLE_CLASS)) {
+            this.agentX.updateReward(-3)
+            this.agentO.updateReward(3)
+        } else if (this.game.isDraw) {
+            this.agentX.updateReward(1)
+            this.agentO.updateReward(1)
         }
     }
 
@@ -67,13 +80,9 @@ class XOEnvironment {
     #showEndGameMessage() {
         if (this.game.checkWin(this.game.X_CLASS)) {
             this.messageHelper.displayPlayerWon("X")
-        }
-
-        if (this.game.checkWin(this.game.CIRCLE_CLASS)) {
+        } else if (this.game.checkWin(this.game.CIRCLE_CLASS)) {
             this.messageHelper.displayPlayerWon("O")
-        }
-
-        if (this.game.isDraw) {
+        } else if (this.game.isDraw) {
             this.messageHelper.displayDraw()
         }
     }

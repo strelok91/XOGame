@@ -20,4 +20,11 @@ class MessageHelper {
 
         winningMessageElement.classList.add('show')
     }
+
+    displayMessage(message)
+    {
+        winningMessageTextElement.innerText = message
+
+        winningMessageElement.classList.add('show')
+    }
 }
