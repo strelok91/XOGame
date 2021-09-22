@@ -35,7 +35,7 @@ let runScenario = async () => {
 
     restartButton.addEventListener('click', async _ => environment.startNewGame())
 
-    await trainEnvironment.train(50000)
+    await trainEnvironment.train(15000)
 
     console.log("finished trainig")
 
