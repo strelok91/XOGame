@@ -1,30 +1,27 @@
 class MessageHelper {
 
-    constructor(winningMessageElement, winningMessageTextElement) {
-        this.winningMessageElement = winningMessageElement
-        this.winningMessageTextElement = winningMessageTextElement
+    constructor() {
+        this.winningMessageElement = document.getElementById('winningMessage')
+        this.winningMessageTextElement = document.querySelector('[data-winning-message-text]')
+        
+        this.winningMessageElement.addEventListener('click', () => this.hideMessage())
     }
 
     hideMessage() {
-        winningMessageElement.classList.remove('show')
+        this.winningMessageElement.classList.remove('show')
     }
 
     displayPlayerWon(player) {
-        winningMessageTextElement.innerText = `${player}'s Wins!`
-
-        winningMessageElement.classList.add('show')
+        this.displayMessage(`${player}'s Wins!`)
     }
 
     displayDraw() {
-        winningMessageTextElement.innerText = `Draw!`
-
-        winningMessageElement.classList.add('show')
-    }
+        this.displayMessage(`Draw!`)    }
 
     displayMessage(message)
     {
-        winningMessageTextElement.innerText = message
+        this.winningMessageTextElement.innerText = message
 
-        winningMessageElement.classList.add('show')
+        this.winningMessageElement.classList.add('show')
     }
 }

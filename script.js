@@ -4,42 +4,33 @@ let restartButton = document.getElementById('restartButton')
 let cellElements = document.querySelectorAll('[data-cell]')
 let game = new XOGame(cellElements)
 
-let winningMessageElement = document.getElementById('winningMessage')
-let winningMessageTextElement = document.querySelector('[data-winning-message-text]')
-let messageHelper = new MessageHelper(winningMessageElement, winningMessageTextElement)
+let winningMessageHelper = new MessageHelper()
 
 let agentX = new QAgent()
 let agentO = new QAgent()
+let userAgent = new UserAgent(cellElements)
 
-let trainEnvironment = new XOEnvironment(
-    game,
-    agentX,
-    // new UserAgent(cellElements),
-    agentO,
-    messageHelper,
-    board
-)
+let progressBar = new ProgressBar()
 
 let environment = new XOEnvironment(
     game,
-    // agentX,
-    new UserAgent(cellElements),
-    agentO,
-    messageHelper,
+    winningMessageHelper,
     board
 )
 
-
-
-let runScenario = async () => {
-
-    restartButton.addEventListener('click', async _ => environment.startNewGame())
-
-    await trainEnvironment.train(10000)
-
-    console.log("finished trainig")
-
-    await environment.startNewGame()
+let train = async (steps) => {
+    await environment.train(agentX, agentO, steps, progressBar)
 }
 
-runScenario()
+let resetAgents = async () => {
+    agentX.resetAgent()
+    agentO.resetAgent()
+}
+
+let playX = async () => {
+    await environment.startNewGame(userAgent, agentO)
+}
+
+let playO = async () => {
+    await environment.startNewGame(agentX, userAgent)
+}

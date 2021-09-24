@@ -1,0 +1,20 @@
+.progressbar {
+    margin: 5px;
+    margin-top: 40px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    align-content: center;
+    height: 20px;
+    border: 1px solid black;
+    border-radius: 20px;
+}
+
+.progressbar::after {
+    content: '';
+    display: block;
+    background-color: lightgray;
+    width: var(--progress);
+    height: 100%;
+    border-radius: 20px;
+}

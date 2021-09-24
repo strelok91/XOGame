@@ -5,6 +5,11 @@ class QAgent {
         this.stateActionValue = {}
     }
 
+    resetAgent() {
+        this.actionsHistory = []
+        this.stateActionValue = {}
+    }
+
     async getAction(state, possibleActions) {
 
         let actionValues = this.#getActionValues(state, possibleActions)

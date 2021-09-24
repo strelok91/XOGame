@@ -1,18 +1,29 @@
 class XOEnvironment {
-    constructor(game, agentX, agentO, messageHelper, board) {
+    constructor(game, messageHelper, board) {
         this.game = game
-        this.agentX = agentX
-        this.agentO = agentO
         this.messageHelper = messageHelper
         this.board = board
+        this.gameStarted = false
     }
 
-    async startNewGame() {
+    async startNewGame(agentX, agentO) {
+
+        console.log(this.gameStarted)
+
+        if(this.gameStarted)
+        {
+            this.messageHelper.displayMessage("Another game is in progress")
+            
+            return
+        }
+
+        this.gameStarted = true
+
         this.game.clearStates()
 
         let agents = {}
-        agents[this.game.X_CLASS] = this.agentX
-        agents[this.game.CIRCLE_CLASS] = this.agentO
+        agents[this.game.X_CLASS] = agentX
+        agents[this.game.CIRCLE_CLASS] = agentO
 
         this.messageHelper.hideMessage()
 
@@ -26,24 +37,26 @@ class XOEnvironment {
         }
 
         this.#showEndGameMessage()
+
+        this.gameStarted = false
     }
 
-    async train(numberOfGames) {
+    async train(agentX, agentO, numberOfGames, progressBar) {
         let agents = {}
-        agents[this.game.X_CLASS] = this.agentX
-        agents[this.game.CIRCLE_CLASS] = this.agentO
+        agents[this.game.X_CLASS] = agentX
+        agents[this.game.CIRCLE_CLASS] = agentO
 
         for (let i = 0; i < numberOfGames; ++i) {
-            if (i % 1000 == 0) {
-                console.log(`Game: ${i + 1}`)
-            }
-
-            await this.#playTrainingGame(agents)
-
-            this.#updateAgentsRewards()
+            setTimeout(async () => {
+                progressBar.setProgress(i * 100.0 / numberOfGames)
+    
+                await this.#playTrainingGame(agents)
+    
+                this.#updateAgentsRewards(agentX, agentO)
+            }, 0);
         }
-
-        console.log(`Game: ${numberOfGames}`)
+        
+        progressBar.setProgress(100)
     }
 
     async #playTrainingGame(agents) {
@@ -57,16 +70,16 @@ class XOEnvironment {
         }
     }
 
-    #updateAgentsRewards() {
+    #updateAgentsRewards(agentX, agentO) {
         if (this.game.checkWin(this.game.X_CLASS)) {
-            this.agentX.updateReward(3)
-            this.agentO.updateReward(-3)
+            agentX.updateReward(3)
+            agentO.updateReward(-3)
         } else if (this.game.checkWin(this.game.CIRCLE_CLASS)) {
-            this.agentX.updateReward(-3)
-            this.agentO.updateReward(3)
+            agentX.updateReward(-3)
+            agentO.updateReward(3)
         } else if (this.game.isDraw) {
-            this.agentX.updateReward(1)
-            this.agentO.updateReward(1)
+            agentX.updateReward(1)
+            agentO.updateReward(1)
         }
     }
 
